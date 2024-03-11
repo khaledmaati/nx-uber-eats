@@ -1,0 +1,24 @@
+on:
+  push:
+
+jobs:
+  update-git-info:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0 # Ensure we have the full history for amend
+
+    - name: Generate Git Info
+      run: |
+        echo '{ "commitHash": "'$(git rev-parse HEAD)'", "date": "'$(date)'", "message": "'$(git log -1 --pretty=%B | sed ':a;N;$!ba;s/\n/\\n/g')'"}' > src/assets/git-info.json
+    - name: Commit and Push
+      run: |
+        git config --global user.email "khaled.maati@accenture.com"
+        git config --global user.name "khaled maati"
+        git add src/assets/git-info.json
+        # Amending the commit without changing its commit message
+        git commit --amend --no-edit
+        # Force push is required to update the commit on remote. Use with caution!
+        git push --force-with-lease
