@@ -12,17 +12,17 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v2
       with:
-        node-version: '18.13' # Specify the Node.js version you need
+        node-version: '14' # Specify the Node.js version you need
 
-    - name: Install Angular CLI
-      run: npm install -g @angular/cli
+    - name: Install Nx CLI
+      run: npm install -g nx
       
     - name: Install Dependencies
       run: npm install
 
     - name: Build
-      run: ng build
-      # This now should work as Angular CLI is installed globally
+      run: nx build --prod
+      # This command builds your Nx workspace for production
         
     - name: Check Build Success
       if: failure() # This step will run only if the previous step fails
@@ -32,11 +32,6 @@ jobs:
         server_port: 587
         username: ${{secrets.EMAIL_USERNAME}}
         password: ${{secrets.EMAIL_PASSWORD}}
-        
-        # EMAIL_USERNAME(zutrzuturztfuztfu@outlook.com)
-        # EMAIL_PASSWORD(@igcdkzudsagdi)
-        
-
         subject: Build Failed
         body: The production build failed. Please check the GitHub Actions logs for more details.
         to: khaled.maati@accenture.com
